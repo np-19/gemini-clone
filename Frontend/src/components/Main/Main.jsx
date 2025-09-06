@@ -57,12 +57,12 @@ const Main = ({ menu, isCollapsed, children }) => {
       // Update content with response from API
       setResponse((prevResponse) => {
         const updated = [...prevResponse];
-        updated[updated.length - 1].content = reply.result;
+        updated[updated.length - 1].content = reply;
         return updated;
       });
 
       if (getAccessToken()) {
-        const data = await updateChat(url, prompt, reply.result);
+        const data = await updateChat(url, prompt, reply);
         navigate(`/app/${data.chatId}`);
       }
     } catch (err) {

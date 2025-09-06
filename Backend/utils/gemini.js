@@ -12,10 +12,9 @@ export const getResponse = async (prompt, history = []) => {
 
   try {
     const response1 = await ai.models.generateContent({
-      model: "gemini-2.0-flash-lite",
+      model: "gemini-2.5-flash-image-preview",
       contents: content,
     });
-
     return response1.text;
   } catch (err) {
     console.error(err);
