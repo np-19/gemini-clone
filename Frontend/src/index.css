@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+
+
+
+@theme{
+  --breakpoint-bigscreen: 960px;
+}
+
+
+  
+/* Hide scrollbar by default */
+.scrollbar-thumb-hidden::-webkit-scrollbar {
+    width: 0px;
+}
+
+.scrollbar-thumb-hidden::-webkit-scrollbar-track {
+    width: 0px;
+}
+.scrollbar-thumb-hidden::-webkit-scrollbar-thumb {
+    width: 0;
+    height: 0;
+}
+
+
+/* Show scrollbar while scrolling */
+.scrollbar-thumb-visible::-webkit-scrollbar-thumb {
+  background-color: rgba(0,0,0,0.2);
+  border-radius: 20px;
+  width: 10px;
+}
+.scrollbar-thumb-visible::-webkit-scrollbar-track {
+    width:10px;
+    background-color: rgba(255,255,255,0.2);
+    border-radius: 10px;
+}
+.scrollbar-thumb-visible::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* The outer container for the animation */
+.conic-border {
+  /* Set size for the element */
+  position: relative;
+  width: 40px; 
+  height: 40px; 
+  border-radius: 50%;
+  overflow: hidden; /* This is important to contain the spinning gradient */
+}
+
+.conic-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(
+    #fff, 
+    #7a72d3, 
+    #53c2b8, 
+    #3c78cf, 
+    #7167d6, 
+    #fff
+  );
+  animation: spin 1.5s infinite linear;
+}
+
+.conic-border::after {
+  content: '';
+  position: absolute;
+  inset: 4px; /* Adjust this value to control the border thickness */
+  background-color: #fff; /* Match this with your background color */
+  border-radius: 50%;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
