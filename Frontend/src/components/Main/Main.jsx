@@ -57,7 +57,7 @@ const Main = ({ menu, isCollapsed, children }) => {
       // Update content with response from API
       setResponse((prevResponse) => {
         const updated = [...prevResponse];
-        updated[updated.length - 1].content = reply;
+        updated[updated.length - 1].content = reply.text;
         return updated;
       });
 

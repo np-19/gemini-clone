@@ -15,7 +15,7 @@ export const getResponse = async (prompt, history = []) => {
       model: "gemini-2.5-flash-image-preview",
       contents: content,
     });
-    return response1.text;
+    return { text: response1.text , response1};
   } catch (err) {
     console.error(err);
     throw new Error("Gemini API Error");

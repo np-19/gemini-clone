@@ -23,11 +23,17 @@ const userSchema = new mongoose.Schema({
   },
   isVerified: { type: Boolean, default: false },
   lastLogin: Date,
+  sessionExpiresAt: Date,
+  lastActivityAt: Date,
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });
 
 
+userSchema.pre("save", function (next) {
+  this.updatedAt = Date.now();
+  next();
+});
 
 
 userSchema.pre('save', async function (next) {

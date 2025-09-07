@@ -22,8 +22,7 @@ export const newChat = async (prompt, response) => {
         body: JSON.stringify({ prompt, response}),
       });
       const data = await response1.json();
-      const reply = data.result;
-      return reply;
+      return data.result;
 
 }
 

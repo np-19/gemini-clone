@@ -15,6 +15,10 @@ router.route("/register").post(async (req, res) => {
   try {
     const newUser = req.body.User;
     const user = new User(newUser);
+    const maxSessionDays = 90;   // hard max
+    user.sessionExpiresAt = new Date(Date.now() + maxSessionDays * 24 * 60 * 60 * 1000);
+    user.lastActivityAt = new Date(); // initial activity
+
     await user.save();
     const accessToken = generateToken(user);
     const refreshToken = generateRefreshToken(user);
@@ -25,7 +29,7 @@ router.route("/register").post(async (req, res) => {
       httpOnly: true,
       sameSite: "lax",
       secure: process.env.NODE_ENV === "production",
-      expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+      expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     });
     res.json({ accessToken, user:userWithoutPassword });
   } catch (err) {
@@ -47,14 +51,19 @@ router.route("/login").post(async (req, res) => {
     if (!user.refreshTokens.includes(refreshToken)) {
       user.refreshTokens.push(refreshToken);
     }
-
+    const maxSessionDays = 90;   // hard max
+    user.sessionExpiresAt = new Date(Date.now() + maxSessionDays * 24 * 60 * 60 * 1000);
+    user.lastActivityAt = new Date(); // initial activity
+    if (user.refreshTokens.length > 5) {
+      user.refreshTokens = user.refreshTokens.slice(-5);
+    }
     await user.save();
     const {password:pass, refreshTokens, ...userWithoutPassword} = user._doc;
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       sameSite: "lax",
       secure: process.env.NODE_ENV === "production",
-      expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+      expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     });
     res.json({ accessToken, user:userWithoutPassword });
   } catch (err) {
@@ -68,29 +77,50 @@ router.route("/token").post(async (req, res) => {
     if (!token) return res.status(401).json({ error: "No refresh token" });
 
     const payload = verifyToken(token, true);
-
     const user = await User.findById(payload.id);
+
     if (!user || !user.refreshTokens.includes(token)) {
       return res.status(401).json({ error: "Invalid user or refresh token" });
     }
-    //optional rotate refresh token
+
+    if (user.sessionExpiresAt && new Date() > user.sessionExpiresAt) {
+      user.refreshTokens = [];
+      await user.save();
+      return res.status(401).json({ error: "Session expired (max limit). Please log in again." });
+    }
+
+    const idleTimeoutMs = 7 * 24 * 60 * 60 * 1000;
+    if (user.lastActivityAt && new Date() - user.lastActivityAt > idleTimeoutMs) {
+      user.refreshTokens = [];
+      await user.save();
+      return res.status(401).json({ error: "Session expired due to inactivity. Please log in again." });
+    }
+
+    user.lastActivityAt = new Date();
+
     const newRefreshToken = generateRefreshToken(user);
     user.refreshTokens = user.refreshTokens.filter((rt) => rt !== token);
     user.refreshTokens.push(newRefreshToken);
+    if (user.refreshTokens.length > 5) {
+      user.refreshTokens = user.refreshTokens.slice(-5);
+    }
     await user.save();
+
     res.cookie("refreshToken", newRefreshToken, {
       httpOnly: true,
       sameSite: "lax",
       secure: process.env.NODE_ENV === "production",
-      expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+      expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // rolling 30 days
     });
 
     const accessToken = generateToken(user);
     res.json({ accessToken });
+
   } catch (err) {
     res.status(500).json({ error: "Refresh token is invalid or expired" });
   }
 });
+
 
 router.route("/logout").post(async (req, res) => {
   try {

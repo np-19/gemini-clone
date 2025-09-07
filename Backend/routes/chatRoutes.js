@@ -61,7 +61,7 @@ router.route('/new/save')
     });    
     const titlePrompt = 'Generate a Chatgpt or Gemini style 4 5 words title for this prompt: ' + prompt +
      'only include the title and nothing else. no extra symbols or characters'
-    const title = await getResponse(titlePrompt)
+    const {text: title} = await getResponse(titlePrompt)
     chat.title = title
     
     await chat.save();

@@ -1,13 +1,20 @@
 import mongoose from 'mongoose';
 
-const partSchema = new mongoose.Schema({
-  type: {
+const inlineDataSchema = new mongoose.Schema({
+  data: {
     type: String,
-    enum: ['text', 'image', 'audio', 'video'], // extensible
-    default: 'text'
+    required: true,
   },
+  mimeType: {
+    type: String,
+    required: true,
+  },
+}, { _id: false });
+
+
+const partSchema = new mongoose.Schema({
   text: String,
-  url: String, // for image/audio/video if needed
+  inlineData: inlineDataSchema,
 }, { _id: false });
 
 const messageSchema = new mongoose.Schema({
