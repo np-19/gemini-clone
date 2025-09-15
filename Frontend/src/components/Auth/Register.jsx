@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Nav from "../Nav/Nav";
+import Nav from "../layout/Nav";
 import { setAccessToken } from "../../helper/authToken";
 import { useNavigate } from "react-router";
 

@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 
-const TextArea = ({placeholder, prompt, promptInput}) => {
-  const textareaRef = useRef(null);  //to access the target element
+const TextArea = ({textareaRef, placeholder, prompt, promptInput}) => {
   const maxHeight = 200; // px
 
    useEffect(() => {

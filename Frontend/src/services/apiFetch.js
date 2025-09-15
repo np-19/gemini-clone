@@ -3,6 +3,7 @@ import { apiFetch } from "../helper/api";
 export const getChatData = async (id) => {
     const resp = await apiFetch(`/api/chats/${id}`)
       const data = await resp.json();
+      if (data.error) throw new Error(data.error);      
       const paired = [];
       for (let i = 0; i < data.history.length; i += 2) {
         paired.push({
@@ -10,6 +11,8 @@ export const getChatData = async (id) => {
           content: data.history[i+1]?.parts[0]?.text || ""
         });
       }
+      console.log(paired);
+      
       return paired;
 }
 

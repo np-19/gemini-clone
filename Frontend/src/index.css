@@ -5,6 +5,7 @@
 
 @theme{
   --breakpoint-bigscreen: 960px;
+  --animate-input : inputDown 0.2s linear 0s 1 normal forwards;
 }
 
 
@@ -79,4 +80,14 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+@keyframes inputDown {
+  0% {
+    bottom:30%;
+  }
+  100% {
+    bottom:20px;
+  }
+  
 }

@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { apiFetch } from './helper/api';
-import { BrowserRouter, Routes, Route,} from 'react-router';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router';
 import './App.css';
 import Register from './components/Auth/Register';
 import Login from './components/Auth/Login';
-import Main from './components/Main/Main';
-import Title from './components/UI/Title';
+import Main from './components/layout/Main';
+import Home from './components/sections/Home';
+import Chat from './components/sections/Chat';
 
 function App() {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -39,7 +40,11 @@ function App() {
   return (
     <BrowserRouter>
         <Routes>
-          <Route path="/app" element={<Main user={user} isCollapsed={isCollapsed} menu={menu}><Title user={user} /></Main>} />
+          <Route path="/" element={<Navigate to="/app" />} />
+          <Route path="/app" element={<Main user={user} isCollapsed={isCollapsed} menu={menu} />}>
+            <Route index element={<Home user={user} />} />
+            <Route path=":id" element={<Chat />} />
+          </Route>
           <Route path="/app/:id" element={<Main user={user} isCollapsed={isCollapsed} menu={menu} />} />
           <Route path="/register" element={<Register setUser={setUser} />} />
           <Route path="/login" element={<Login setUser={setUser} />}  /> 
