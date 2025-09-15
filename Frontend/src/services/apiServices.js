@@ -1,4 +1,4 @@
-import { apiFetch } from "../helper/api";
+import { apiFetch } from "../helper/apiFetch";
 
 export const getChatData = async (id) => {
     const resp = await apiFetch(`/api/chats/${id}`)

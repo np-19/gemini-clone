@@ -1,7 +1,7 @@
 import Markdown from "../ui/Markdown"
 import { useOutletContext, useParams, useNavigate } from "react-router";
 import { useRef, useState, useEffect } from "react";
-import { getChatData } from "../../services/apiFetch";
+import { getChatData } from "../../services/apiServices";
 
 
 

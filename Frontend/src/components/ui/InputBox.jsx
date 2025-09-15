@@ -2,7 +2,7 @@ import TextArea from "./TextArea"
 import {assets} from '../../assets/assets'
 import { useRef} from "react";
 import { getAccessToken } from "../../helper/authToken";
-import { newChat, updateChat } from "../../services/apiFetch";
+import { newChat, updateChat } from "../../services/apiServices";
 import { useNavigate } from "react-router";
 import { useState } from "react";
 
