@@ -29,10 +29,10 @@ export const newChat = async (prompt, response) => {
 
 }
 
-export const updateChat = async (url, prompt, response) => {
+export const updateChat = async (url, prompt, reply) => {
     const response2 = await apiFetch(url, {
         method: "POST",
-        body: JSON.stringify({ prompt, response }),
+        body: JSON.stringify({ prompt, reply }),
     })
       const data = await response2.json(); 
       return data;

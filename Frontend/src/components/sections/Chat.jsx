@@ -58,7 +58,7 @@ const Chat = () => {
       <div className="relative border-box flex-1 w-full border-box flex h-full flex-col scrollbar-thumb-visible overflow-x-hidden overflow-y-scroll items-center justify-center">
         <div className='w-full box-border h-full flex justify-center flex-wrap pt-4 pb-20'>
           {displayResponse}
-          <div className='w-full h-30' ref={chatEndRef} />
+          <div className='w-full' ref={chatEndRef} />
 
         </div>
 

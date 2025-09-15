@@ -33,6 +33,7 @@ router.route("/new")
 const { prompt, response } = req.body;
 try {
   const result = await getResponse(prompt, response);
+  console.log(result);
   return res.json({ result });
 }catch(err){
   res.status(500).json({ error: err.message });
@@ -42,7 +43,8 @@ try {
 
 router.route('/new/save')
 .post(protect, async (req, res) => {
-  const { prompt, response } = req.body;
+  const { prompt, reply } = req.body;
+  
   try {
     const chat = new Chat({
       user: req.user._id,
@@ -55,7 +57,7 @@ router.route('/new/save')
       }, {
         role: "model",
         parts: [{
-          text: response,
+          text: reply.text,
         }],
       }],
     });    
