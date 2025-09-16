@@ -3,9 +3,10 @@ import remarkGfm from "remark-gfm";
 import { assets } from "../../assets/assets";
 import CodeBlock from "./CodeBlock"; // Custom code syntax highlighting component
 
-const Markdown = ({ item, loading }) => {
+const Markdown = ({ item, loading}) => {
+  
   const customMarkdownComponents = {
-    code({ node, inline, className, children, ...props }) {
+    code({node, inline, className, children, ...props }) {
       const match = /language-(\w+)/.exec(className || "");
       return !inline && match ? (
         <CodeBlock language={match[1]}>
@@ -70,19 +71,11 @@ const Markdown = ({ item, loading }) => {
 
   return (
     <div className="max-w-[758px] w-full space-y-4 p-4">
-      {/* User prompt */}
       <div className="w-full h-auto relative flex justify-end mb-4 pl-4">
         {item.prompt && (
           <p className="px-5 py-2 max-w-[80%] bg-green-700 text-white rounded-[20px_0px_20px_20px]">
             {item.prompt}
           </p>
-        )}
-        {item.promptImage && (
-          <img
-            src={item.promptImage}
-            alt="User uploaded"
-            className="w-auto h-32 object-contain ml-4 rounded-xl"
-          />
         )}
       </div>
 
@@ -90,13 +83,8 @@ const Markdown = ({ item, loading }) => {
       <div className="w-full relative pl-4 mb-4">
         <div className="absolute -left-8 -top-2 flex justify-center ">
           {loading ? (
-            <div className="conic-border top-1/2 flex-shrink-0 mr-4 size-10 flex items-center justify-center">
+            <div className="conic-border top-1/2 flex-shrink-0 mr-4 size-8 flex items-center justify-center">
               <div className="conic-border-inner flex items-center justify-center">
-                <img
-                  src={assets.gemini_icon}
-                  alt="Gemini is typing"
-                  className="size-7 z-50 animate-pulse"
-                />
               </div>
             </div>
           ) : (

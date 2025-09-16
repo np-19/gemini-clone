@@ -3,15 +3,14 @@ import {assets} from '../../assets/assets'
 import { useRef} from "react";
 import { getAccessToken } from "../../helper/authToken";
 import { newChat, updateChat } from "../../services/apiServices";
-import { useNavigate } from "react-router";
-import { useState } from "react";
+import { useNavigate, useParams } from "react-router";
 
-const InputBox = ({prompt, setPrompt, response, setResponse}) => {
+const InputBox = ({prompt, setPrompt, response, setResponse, setLoading}) => {
+  const {id} = useParams();
 
   const textareaRef = useRef(null);
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-  let url = response.length > 0 ? `/api/chats/${response[0].chatId}/save` : "/api/chats/new/save";
+  let url = response.length > 0 ? `/api/chats/${id}/save` : "/api/chats/new/save";
 
  const promptInput = (e) => {
     const maxHeight = 200;

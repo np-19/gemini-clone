@@ -43,8 +43,8 @@
 .conic-border {
   /* Set size for the element */
   position: relative;
-  width: 40px; 
-  height: 40px; 
+  width: 30px; 
+  height: 30px; 
   border-radius: 50%;
   overflow: hidden; /* This is important to contain the spinning gradient */
 }

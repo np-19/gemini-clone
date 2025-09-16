@@ -1,16 +1,18 @@
 import { useOutletContext } from "react-router";
 import InputBox from "../ui/InputBox";
 import Chat from "./Chat";
+import { useState } from "react";
+
 
 
 const Home = ({ user }) => {
-    const { prompt, setPrompt, response, setResponse } = useOutletContext();
+    const { loading, setLoading, prompt, setPrompt, response, setResponse } = useOutletContext();
 
 
 
     if (response.length > 0) {
         return (
-            <Chat />
+            <Chat  />
         );
         
     }
@@ -27,7 +29,7 @@ const Home = ({ user }) => {
                 }
             </h1>
             <div className="w-full bigscreen:relative absolute bigscreen:bottom-0 flex animate-input bigscreen:animate-none flex-col items-center">
-                <InputBox prompt={prompt} setPrompt={setPrompt} response={response} setResponse={setResponse}  />
+                <InputBox setLoading={setLoading} prompt={prompt} setPrompt={setPrompt} response={response} setResponse={setResponse}  />
             </div>
             </div>
 

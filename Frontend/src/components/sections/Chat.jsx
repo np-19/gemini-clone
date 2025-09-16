@@ -2,13 +2,13 @@ import Markdown from "../ui/Markdown"
 import { useOutletContext, useParams, useNavigate } from "react-router";
 import { useRef, useState, useEffect } from "react";
 import { getChatData } from "../../services/apiServices";
+import InputBox from "../ui/InputBox";
 
 
 
 
 const Chat = () => {
-  const { response, setPrompt, setResponse, prompt } = useOutletContext();  
-  const [loading, setLoading] = useState(false);
+  const { loading, setLoading, response, setPrompt, setResponse, prompt } = useOutletContext();  
   const chatEndRef = useRef(null);
   const navigate = useNavigate();
   let { id } = useParams();
@@ -39,29 +39,31 @@ const Chat = () => {
 
   useEffect(() => {
     if (chatEndRef.current) {
-      chatEndRef.current.scrollIntoView({ behavior: "smooth" });
+      chatEndRef.current.scrollIntoView({ behavior: "smooth", block: "start" , });
     }
-  }, [response, loading]);
+  }, [response]);
 
   
   const displayResponse = response.map((item, index) => {
     if (response.length === 0) return null;
     return (
-      <Markdown
-        key={index}
-        item={item}
-        loading={loading && index === response.length - 1}
-      />
+     <>
+      <Markdown key={index} item={item} loading={index === response.length - 1 && loading } />
+      {index === response.length - 1 && <div ref={chatEndRef} />}
+      </>
     );
   });
   return (
-      <div className="relative border-box flex-1 w-full border-box flex h-full flex-col scrollbar-thumb-visible overflow-x-hidden overflow-y-scroll items-center justify-center">
+      <div className="flex-1 flex flex-col items-center justify-center overflow-hidden w-full relative">
+        <div className="relative border-box flex-1 w-full border-box flex flex-col scrollbar-thumb-visible overflow-x-hidden overflow-y-scroll items-center justify-center">
         <div className='w-full box-border h-full flex justify-center flex-wrap pt-4 pb-20'>
           {displayResponse}
-          <div className='w-full' ref={chatEndRef} />
-
         </div>
 
+      </div>
+      <div className="w-full flex animate-input bigscreen:animate-none flex-col items-center">
+                <InputBox setLoading={setLoading} prompt={prompt} setPrompt={setPrompt} response={response} setResponse={setResponse}  />
+            </div>
       </div>
 
   )

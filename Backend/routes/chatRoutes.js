@@ -94,7 +94,7 @@ router.route('/:id')
 
 router.route('/:id/save').post(async (req, res) => {
   const {id} = req.params
-  const {prompt, response} = req.body
+  const {prompt, reply} = req.body
   try {
     const chat = await Chat.findById(id)
     chat.history.push({
@@ -106,7 +106,7 @@ router.route('/:id/save').post(async (req, res) => {
     chat.history.push({
       role: "model",
       parts: [{
-        text: response,
+        text: reply.text,
       }],
     })
     await chat.save()

@@ -7,6 +7,10 @@ import Sidebar from "./Sidebar";
 const Main = ({ menu, isCollapsed, children }) => {
   const [response, setResponse] = useState([]);
   const [prompt, setPrompt] = useState("");
+  const [loading, setLoading] = useState(false);
+
+
+  
 
  
   function menuCollapse() {
@@ -29,7 +33,7 @@ const Main = ({ menu, isCollapsed, children }) => {
         className="flex pb-6 relative flex-col h-screen items-center w-full z-10 bigscreen:flex-1 justify-between scrollbar-thumb-hidden"
       >
         <Nav isCollapsed={isCollapsed} menu={menu} />
-        <Outlet context={{ response, setResponse, prompt, setPrompt, setResponse}} />
+        <Outlet context={{ loading, setLoading, prompt, setPrompt, response, setResponse }} />
       </div>
     </>
   );
