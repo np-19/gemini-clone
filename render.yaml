@@ -28,7 +28,6 @@ services:
   - type: web
     name: gemini-clone-frontend
     runtime: static
-    plan: free
     rootDir: Frontend
     buildCommand: npm install && npm run build
     staticPublishPath: dist
