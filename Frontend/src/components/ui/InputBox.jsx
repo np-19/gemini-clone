@@ -1,81 +1,35 @@
-import TextArea from "./TextArea"
-import {assets} from '../../assets/assets'
+import TextArea from "./TextArea";
 import { useRef } from "react";
 import { getAccessToken } from "../../helper/authToken";
 import { newChat, updateChat } from "../../services/apiServices";
 import { useNavigate, useParams } from "react-router";
-//props: prompt, setPrompt, response, setResponse, setLoading
-//props are the variables passed down from the parent component (App.jsx) to manage the state of the input box and handle interactions with the Gemini API.
-const InputBox = ({prompt, setPrompt, response, setResponse, setLoading}) => {
-  const {id} = useParams();
+
+const InputBox = ({ prompt, setPrompt, response, setResponse, setLoading }) => {
+  const { id } = useParams();
   const textareaRef = useRef(null);
   const navigate = useNavigate();
-  let url = response.length > 0 ? `/api/chats/${id}/save` : "/api/chats/new/save";
-
- const promptInput = (e) => {
-    const maxHeight = 200;
-    setPrompt(e.target.value);
-    const textarea = e.target;
-    textarea.style.height = "auto"; // reset
-    textarea.style.height = Math.min(textarea.scrollHeight, maxHeight) + "px";
-  };
-
-    const getData = async (e) => {
-    e.preventDefault();
-
-    if (prompt.trim() === "") return;
-    setResponse((prevResponse) => {
-      const updated = [...prevResponse, { prompt, content: "" }];
-      return updated;
-    });
+  const saveUrl = response.length > 0 ? `/api/chats/${id}/save` : "/api/chats/new/save";
+  const promptInput = (event) => { setPrompt(event.target.value); event.target.style.height = "auto"; event.target.style.height = `${Math.min(event.target.scrollHeight, 200)}px`; };
+  const getData = async (event) => {
+    event.preventDefault();
+    const submittedPrompt = prompt.trim();
+    if (!submittedPrompt) return;
+    setResponse((items) => [...items, { prompt: submittedPrompt, content: "" }]);
     setPrompt("");
-    if (textareaRef.current)
-    textareaRef.current.style.height = "auto";
+    if (textareaRef.current) textareaRef.current.style.height = "auto";
     setLoading(true);
-
     try {
-      const reply = await newChat(prompt, response);
-      console.log(reply);
-      
-      // Update content with response from API
-      setResponse((prevResponse) => {
-        const updated = [...prevResponse];
-        updated[updated.length - 1].content = reply.text;
-        return updated;
-      });
-
-      if (getAccessToken()) {
-        const data = await updateChat(url, prompt, reply);
-        navigate(`/app/${data.chatId}`);
-      }
-    } catch (err) {
-      console.error(err);
-      // Handle error gracefully
-      setResponse((prevResponse) => {
-        const updated = [...prevResponse];
-        updated[updated.length - 1].content =
-          "Sorry, an error occurred while fetching the response.";
-        return updated;
-      });
-    } finally {
-      setLoading(false);
-    }
+      const reply = await newChat(submittedPrompt, response);
+      setResponse((items) => items.map((item, index) => index === items.length - 1 ? { ...item, content: reply.text } : item));
+      if (getAccessToken()) { const data = await updateChat(saveUrl, submittedPrompt, reply); navigate(`/app/${data.chatId}`); }
+    } catch (error) {
+      setResponse((items) => items.map((item, index) => index === items.length - 1 ? { ...item, content: "Sorry, I couldn't complete that request." } : item));
+      console.error(error);
+    } finally { setLoading(false); }
   };
-
-  
-  return (
-    <div className="max-w-[758px] z-30 w-95/100 min-h-[108px] max-h-[432px] px-6 py-4 border-[1px] border-[#DADADA] bg-[rgba(255,255,255,1)] rounded-3xl flex flex-col">
-        <TextArea textareaRef={textareaRef} promptInput={promptInput} prompt={prompt} placeholder={"Ask Gemini"} />
-        <div className="h-12 flex items-center justify-between">
-          <div className="size-9 rounded-full hover:bg-neutral-300 flex justify-center items-center">
-            <img src={assets.plus_icon} className="h-5 brightness-0 cursor-pointer" alt="" />
-          </div>
-          <button type="button" onClick={getData} className="size-10 cursor-pointer rounded-full bg-neutral-200 pl-1 hover:bg-neutral-300 flex justify-center items-center">
-            <img src={assets.send_icon} className="h-5 brightness-0 " alt="" />
-          </button>
-        </div>
-      </div>
-  )
-}
-
-export default InputBox
+  return <form onSubmit={getData} className="rounded-2xl border border-zinc-300 bg-white p-2 shadow-[0_12px_30px_rgba(24,24,27,0.08)] transition focus-within:border-zinc-400 focus-within:shadow-[0_12px_30px_rgba(24,24,27,0.12)]">
+    <TextArea textareaRef={textareaRef} promptInput={promptInput} onKeyDown={(event) => { if (event.key === "Enter" && !event.shiftKey) getData(event); }} prompt={prompt} placeholder="Ask anything" />
+    <div className="flex items-center justify-between px-1 pb-1"><span className="pl-2 text-xs text-zinc-400">Press Enter to send</span><button type="submit" aria-label="Send message" disabled={!prompt.trim()} className="flex size-9 items-center justify-center rounded-xl bg-zinc-900 text-base text-white transition hover:bg-zinc-700 disabled:bg-zinc-200 disabled:text-zinc-400">↑</button></div>
+  </form>;
+};
+export default InputBox;

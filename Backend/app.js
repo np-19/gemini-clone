@@ -59,7 +59,11 @@ app.get('/', (req,res)=>{
 
 
 async function main() {
-    await mongoose.connect(process.env.MONGO_URI || 'mongodb://127.0.0.1/gemini-clone');
+    const configuredUri = process.env.MONGO_URI || 'mongodb://127.0.0.1/gemini-clone';
+    // Atlas URIs must not include a trailing slash after the database name.
+    // For example, use `/AiChat?appName=Cluster0`, not `/AiChat/?appName=Cluster0`.
+    const mongoUri = configuredUri.replace(/\/(?=\?|$)/, '');
+    await mongoose.connect(mongoUri);
 }
 
 main()

@@ -1,6 +1,6 @@
 import Markdown from "../ui/Markdown"
-import { useOutletContext, useParams, useNavigate } from "react-router";
-import { useRef, useState, useEffect } from "react";
+import { useOutletContext, useParams } from "react-router";
+import { useRef, useEffect } from "react";
 import { getChatData } from "../../services/apiServices";
 import InputBox from "../ui/InputBox";
 
@@ -10,7 +10,6 @@ import InputBox from "../ui/InputBox";
 const Chat = () => {
   const { loading, setLoading, response, setPrompt, setResponse, prompt } = useOutletContext();  
   const chatEndRef = useRef(null);
-  const navigate = useNavigate();
   let { id } = useParams();
   id = id === "chat" ? null : id;
 
@@ -19,7 +18,6 @@ const Chat = () => {
   async function getChat(chatId) {
     setResponse([]);
     try {
-      navigate(`/app/${chatId}`);
       const paired = await getChatData(chatId);
       console.log(paired);
       setResponse(paired);
@@ -54,15 +52,17 @@ const Chat = () => {
     );
   });
   return (
-      <div className="flex-1 flex flex-col items-center justify-center overflow-hidden w-full relative">
-        <div className="relative border-box flex-1 w-full border-box flex flex-col scrollbar-thumb-visible overflow-x-hidden overflow-y-scroll items-center justify-center">
-        <div className='w-full box-border h-full flex justify-center flex-wrap pt-4 pb-20'>
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-white">
+        <div className="flex-1 overflow-y-auto">
+        <div className='mx-auto flex w-full max-w-4xl flex-col divide-y divide-zinc-100 px-5 pb-8 pt-2 sm:px-8'>
           {displayResponse}
         </div>
 
       </div>
-      <div className="w-full flex animate-input bigscreen:animate-none flex-col items-center">
+      <div className="border-t border-zinc-100 bg-white px-4 py-3">
+        <div className="mx-auto w-full max-w-4xl">
                 <InputBox setLoading={setLoading} prompt={prompt} setPrompt={setPrompt} response={response} setResponse={setResponse}  />
+        </div>
             </div>
       </div>
 

@@ -1,41 +1,25 @@
 import { useOutletContext } from "react-router";
 import InputBox from "../ui/InputBox";
 import Chat from "./Chat";
-import { useState } from "react";
-
-
 
 const Home = ({ user }) => {
-    const { loading, setLoading, prompt, setPrompt, response, setResponse } = useOutletContext();
+  const { loading, setLoading, prompt, setPrompt, response, setResponse } = useOutletContext();
+  if (response.length > 0) return <Chat />;
+  const name = user?.firstName ? `, ${user.firstName}` : "";
 
-
-
-    if (response.length > 0) {
-        return (
-            <Chat  />
-        );
-        
-    }
-
-
-
-    return (
-        <div className="absolute top-0 left-0 h-screen w-full border-box flex flex-col items-center justify-center pb-15">
-               <div className="w-full h-auto flex flex-col items-center justify-start">
-                 <h1 className="text-4xl text-center mb-10 w-9/10 bg-gradient-to-r from-red-600 via-blue-600 to-purple-600 bg-clip-text text-transparent">
-                {
-                !user ? <>Meet Gemini<br />Your Personal AI Assistant</>
-                : <>Hello, {user.firstName}</>
-                }
-            </h1>
-            <div className="w-full bigscreen:relative absolute bigscreen:bottom-0 flex animate-input bigscreen:animate-none flex-col items-center">
-                <InputBox setLoading={setLoading} prompt={prompt} setPrompt={setPrompt} response={response} setResponse={setResponse}  />
-            </div>
-            </div>
-
-        </div>
-    );
-
+  return <main className="flex min-h-0 flex-1 flex-col bg-white">
+    <section className="mx-auto flex w-full max-w-3xl flex-1 flex-col justify-center px-5 pb-16 sm:px-8">
+      <div className="max-w-xl">
+        <span className="mb-5 inline-flex rounded-full border border-zinc-200 bg-zinc-50 px-3 py-1 text-xs font-medium text-zinc-500">Your private thinking space</span>
+        <h1 className="text-4xl font-semibold tracking-[-0.04em] text-zinc-950 sm:text-5xl">What are you working on{name}?</h1>
+        <p className="mt-5 max-w-lg text-base leading-7 text-zinc-500">Ask for an explanation, turn a rough idea into a plan, or explore something new.</p>
+      </div>
+      <div className="mt-10"><InputBox setLoading={setLoading} prompt={prompt} setPrompt={setPrompt} response={response} setResponse={setResponse} /></div>
+      <div className="mt-5 flex flex-wrap gap-2">
+        {["Explain a concept", "Brainstorm ideas", "Help me write"].map((label) => <button key={label} onClick={() => setPrompt(label === "Explain a concept" ? "Explain " : label === "Brainstorm ideas" ? "Help me brainstorm ideas for " : "Help me write " )} className="rounded-full border border-zinc-200 px-3 py-1.5 text-xs font-medium text-zinc-500 transition hover:border-zinc-300 hover:bg-zinc-50 hover:text-zinc-800">{label}</button>)}
+      </div>
+    </section>
+  </main>;
 };
 
 export default Home;

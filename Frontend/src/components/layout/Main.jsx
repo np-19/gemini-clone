@@ -8,6 +8,11 @@ const Main = ({ menu, isCollapsed, user }) => {
   const [response, setResponse] = useState([]);
   const [prompt, setPrompt] = useState("");
   const [loading, setLoading] = useState(false);
+  const resetChat = () => {
+    setResponse([]);
+    setPrompt("");
+    setLoading(false);
+  };
 
 
   
@@ -25,16 +30,17 @@ const Main = ({ menu, isCollapsed, user }) => {
     <>
       <Sidebar
         setResponse={setResponse}
+        onNewChat={resetChat}
         isCollapsed={isCollapsed}
         menu={menu}
         user={user}
       />
       <div
         onClick={menuCollapse}
-        className="flex pb-6 relative flex-col h-screen items-center w-full z-10 bigscreen:flex-1 justify-between scrollbar-thumb-hidden"
+        className="relative flex h-screen w-full min-w-0 flex-col items-stretch overflow-hidden bg-white"
       >
         <Nav isCollapsed={isCollapsed} menu={menu} user={user} />
-        <Outlet context={{ loading, setLoading, prompt, setPrompt, response, setResponse }} />
+        <Outlet context={{ loading, setLoading, prompt, setPrompt, response, setResponse, resetChat }} />
       </div>
     </>
   );

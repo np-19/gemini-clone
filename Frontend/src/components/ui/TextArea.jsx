@@ -1,42 +1,12 @@
-import { useState, useRef, useEffect } from "react";
+import { useEffect } from "react";
 
-const TextArea = ({textareaRef, placeholder, prompt, promptInput}) => {
-  const maxHeight = 200; // px
+const TextArea = ({ textareaRef, placeholder, prompt, promptInput, onKeyDown }) => {
+  useEffect(() => {
+    if (textareaRef.current) textareaRef.current.style.height = "auto";
+  }, [textareaRef]);
 
-   useEffect(() => {
-    if (textareaRef.current) {
-      // Initialize height correctly on mount
-      textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height =
-        Math.min(textareaRef.current.scrollHeight, maxHeight) + "px";
-    }
-  }, []);
-
-
-  return (
-    <>
-      <textarea
-        ref={textareaRef}
-        onInput={promptInput}
-        value={prompt}
-        placeholder={placeholder}
-        className="w-full
-                  min-h-[40px]
-                  max-h-[200px]
-                  overflow-y-auto
-                  resize-none
-                  scrollbar-thumb-visible
-                  p-2
-                  border-0
-                  text-base
-                  leading-relaxed
-                  rounded-lg
-                  focus:outline-none
-               "
-        rows={1}
-      />
-    </>
-  );
+  return <textarea ref={textareaRef} onInput={promptInput} onKeyDown={onKeyDown} value={prompt} placeholder={placeholder} rows={1}
+    className="min-h-12 w-full resize-none bg-transparent px-1 py-3 text-[15px] leading-6 text-zinc-900 outline-none placeholder:text-zinc-400" />;
 };
 
 export default TextArea;
