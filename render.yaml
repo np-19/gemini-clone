@@ -22,7 +22,7 @@ services:
         fromService:
           type: web
           name: gemini-clone-frontend
-          property: host
+          envVarKey: RENDER_EXTERNAL_URL
 
   # Frontend Static Site
   - type: web
@@ -40,5 +40,4 @@ services:
         fromService:
           type: web
           name: gemini-clone-backend
-          property: host
-
+          envVarKey: RENDER_EXTERNAL_URL
