@@ -40,7 +40,7 @@ res.json({message: "Welcome User!", user: req.user});
 
 
 
-const port = 8080;
+const port = process.env.PORT || 8080;
 app.listen(port, () => {
   console.log("listening to port : ", port);
 });
@@ -56,7 +56,7 @@ app.get('/', (req,res)=>{
 
 
 async function main() {
-    await mongoose.connect('mongodb://127.0.0.1/gemini-clone');
+    await mongoose.connect(process.env.MONGO_URI || 'mongodb://127.0.0.1/gemini-clone');
 }
 
 main()

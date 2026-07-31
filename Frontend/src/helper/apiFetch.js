@@ -2,6 +2,8 @@ import { setAccessToken,
     getAccessToken,
     clearAccessToken } from './authToken';
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL || '';
+
 export const apiFetch = async (url, options = {}) => {
     const token = getAccessToken();    
     const headers = {
@@ -33,7 +35,7 @@ export const apiFetch = async (url, options = {}) => {
 
 const refreshAccessToken = async () => {
     try {
-        const res = await fetch('/api/auth/token', { method: 'POST', credentials: 'include' });
+        const res = await fetch(`${API_BASE}/api/auth/token`, { method: 'POST', credentials: 'include' });
         if (!res.ok) {
             return false;
         }

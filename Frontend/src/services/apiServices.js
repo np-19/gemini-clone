@@ -37,3 +37,16 @@ export const updateChat = async (url, prompt, reply) => {
       const data = await response2.json(); 
       return data;
 }
+
+export const enhancePrompt = async (prompt) => {
+    const response = await fetch("/api/chats/enhance", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ prompt }),
+    });
+    const data = await response.json();
+    if (data.error) throw new Error(data.error);
+    return data.enhancedPrompt;
+}

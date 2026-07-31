@@ -18,6 +18,7 @@ import newchat_icon from './newchat_icon.png'
 import diamond_icon from './diamond_icon.png'
 import story_icon from './story_icon.png'
 import chess_icon from './chess_icon.png'
+import sparkle_icon from './sparkle_icon.svg'
 
 export const assets = {
     history_icon,
@@ -40,5 +41,6 @@ export const assets = {
     diamond_icon,
     story_icon,
     chess_icon,
+    sparkle_icon,
 
 }

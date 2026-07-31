@@ -1,0 +1,39 @@
+services:
+  # Backend Web Service
+  - type: web
+    name: gemini-clone-backend
+    env: node
+    plan: free
+    rootDir: Backend
+    buildCommand: npm install
+    startCommand: node app.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGO_URI
+        sync: false # User must provide their MongoDB Atlas connection string in the Render Dashboard
+      - key: GEMINI_API_KEY
+        sync: false # User must provide their Google Gemini API Key in the Render Dashboard
+      - key: JWT_SECRET
+        generateValue: true # Render will automatically generate a secure random secret key
+      - key: JWT_REFRESH_SECRET
+        generateValue: true # Render will automatically generate a secure random refresh secret key
+      - key: FRONTEND_URL
+        fromService:
+          type: static
+          name: gemini-clone-frontend
+          property: host
+
+  # Frontend Static Site
+  - type: static
+    name: gemini-clone-frontend
+    plan: free
+    rootDir: Frontend
+    buildCommand: npm install && npm run build
+    publishPath: dist
+    envVars:
+      - key: VITE_API_BASE_URL
+        fromService:
+          type: web
+          name: gemini-clone-backend
+          property: host

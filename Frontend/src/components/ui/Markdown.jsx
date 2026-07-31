@@ -6,12 +6,25 @@ import CodeBlock from "./CodeBlock"; // Custom code syntax highlighting componen
 const Markdown = ({ item, loading}) => {
   
   const customMarkdownComponents = {
-    code({node, inline, className, children, ...props }) {
+    code({ inline, className, children, ...props }) {
       const match = /language-(\w+)/.exec(className || "");
+      const language = match ? match[1] : "";
+      const isDiagram = /^(mermaid|diagram|plantuml|ascii|dot|graphviz)$/i.test(language);
+      
       return !inline && match ? (
-        <CodeBlock language={match[1]}>
-          {String(children).replace(/\n$/, "")}
-        </CodeBlock>
+        isDiagram ? (
+          <div className="overflow-x-auto scrollbar-thumb-visible my-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+            <pre className="whitespace-pre font-mono text-sm">
+              <code className={className} {...props}>
+                {children}
+              </code>
+            </pre>
+          </div>
+        ) : (
+          <CodeBlock language={language}>
+            {String(children).replace(/\n$/, "")}
+          </CodeBlock>
+        )
       ) : (
         <code className={className} {...props}>
           {children}
@@ -47,6 +60,22 @@ const Markdown = ({ item, loading}) => {
         {...props}
       />
     ),
+    pre: (props) => {
+      // Check if this pre contains a diagram-like content
+      const content = props.children?.props?.children;
+      const isDiagramContent = content && typeof content === 'string' && 
+        (/[├─┤│┌┐└┘╔╗╚╝═║╠╣╦╩╬]/.test(content) || // Box drawing characters
+         /[\+\-\|\/\\].*[\+\-\|\/\\]/.test(content) || // ASCII art patterns
+         content.split('\n').length > 3); // Multi-line content
+      
+      return isDiagramContent ? (
+        <div className="overflow-x-auto scrollbar-thumb-visible my-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+          <pre className="whitespace-pre font-mono text-sm" {...props} />
+        </div>
+      ) : (
+        <pre {...props} />
+      );
+    },
     table: (props) => (
       <div className="overflow-x-auto scrollbar-thumb-visible rounded-xl">
         <table className="min-w-full divide-y divide-gray-200" {...props} />
