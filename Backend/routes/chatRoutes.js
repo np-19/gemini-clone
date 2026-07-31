@@ -1,7 +1,7 @@
 import { Router } from "express";
 import Chat from "../models/Chat.js";
 import { protect } from "../middlewares/auth.js";
-import { getResponse, enhancePrompt } from "../utils/gemini.js";
+import { getResponse } from "../utils/gemini.js";
 import mongoose from "mongoose";
 
 const router = Router();
@@ -39,18 +39,6 @@ try {
   res.status(500).json({ error: err.message });
 }  
 });
-
-router.route("/enhance")
-.post(async (req, res) => {
-  const { prompt } = req.body;
-  try {
-    const result = await enhancePrompt(prompt);
-    return res.json({ enhancedPrompt: result.text });
-  } catch(err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
 
 router.route('/new/save')
 .post(protect, async (req, res) => {

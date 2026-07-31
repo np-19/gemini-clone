@@ -15,7 +15,6 @@ export const getChatData = async (id) => {
       
       return paired;
 }
-
 export const newChat = async (prompt, response) => {
     const response1 = await apiFetch("/api/chats/new", {
         method: "POST",
@@ -36,17 +35,4 @@ export const updateChat = async (url, prompt, reply) => {
     })
       const data = await response2.json(); 
       return data;
-}
-
-export const enhancePrompt = async (prompt) => {
-    const response = await apiFetch("/api/chats/enhance", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ prompt }),
-    });
-    const data = await response.json();
-    if (data.error) throw new Error(data.error);
-    return data.enhancedPrompt;
 }

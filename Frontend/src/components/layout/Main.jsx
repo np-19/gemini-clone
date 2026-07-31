@@ -33,7 +33,7 @@ const Main = ({ menu, isCollapsed, user }) => {
         onClick={menuCollapse}
         className="flex pb-6 relative flex-col h-screen items-center w-full z-10 bigscreen:flex-1 justify-between scrollbar-thumb-hidden"
       >
-        <Nav isCollapsed={isCollapsed} menu={menu} />
+        <Nav isCollapsed={isCollapsed} menu={menu} user={user} />
         <Outlet context={{ loading, setLoading, prompt, setPrompt, response, setResponse }} />
       </div>
     </>
