@@ -26,6 +26,14 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 // app.use(flash());
 
+// Avoid queuing requests against a disconnected database. A queued Mongoose
+// operation otherwise fails later with a misleading buffering timeout.
+app.use((req, res, next) => {
+  if (mongoose.connection.readyState !== 1) {
+    return res.status(503).json({ error: "Database is unavailable. Check the MongoDB connection settings." });
+  }
+  next();
+});
 
 app.use('/api/auth', authRoutes);
 app.use('/api/chats', chatRoutes);
@@ -63,7 +71,7 @@ async function main() {
     // Atlas URIs must not include a trailing slash after the database name.
     // For example, use `/AiChat?appName=Cluster0`, not `/AiChat/?appName=Cluster0`.
     const mongoUri = configuredUri.replace(/\/(?=\?|$)/, '');
-    await mongoose.connect(mongoUri);
+    await mongoose.connect(mongoUri, { serverSelectionTimeoutMS: 5000 });
 }
 
 main()

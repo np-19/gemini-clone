@@ -4,7 +4,7 @@ import { Outlet } from "react-router";
 import Sidebar from "./Sidebar";
 
 
-const Main = ({ menu, isCollapsed, user }) => {
+const Main = ({ menu, isCollapsed, user, onLogout }) => {
   const [response, setResponse] = useState([]);
   const [prompt, setPrompt] = useState("");
   const [loading, setLoading] = useState(false);
@@ -39,7 +39,7 @@ const Main = ({ menu, isCollapsed, user }) => {
         onClick={menuCollapse}
         className="relative flex h-screen w-full min-w-0 flex-col items-stretch overflow-hidden bg-white"
       >
-        <Nav isCollapsed={isCollapsed} menu={menu} user={user} />
+        <Nav isCollapsed={isCollapsed} menu={menu} user={user} onLogout={onLogout} />
         <Outlet context={{ loading, setLoading, prompt, setPrompt, response, setResponse, resetChat }} />
       </div>
     </>

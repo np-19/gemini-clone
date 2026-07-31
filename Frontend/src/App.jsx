@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { apiFetch } from './helper/apiFetch';
+import { apiUrl } from './helper/apiFetch';
+import { clearAccessToken } from './helper/authToken';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router';
 import './App.css';
 import Register from './components/Auth/Register';
@@ -15,6 +17,14 @@ function App() {
 
   }
   let [user, setUser] = useState(null);
+  const handleLogout = async () => {
+    try {
+      await fetch(apiUrl('/api/auth/logout'), { method: 'POST', credentials: 'include' });
+    } finally {
+      clearAccessToken();
+      setUser(null);
+    }
+  };
 
   useEffect(() => {
     async function fetchUser() {
@@ -41,11 +51,11 @@ function App() {
     <BrowserRouter>
         <Routes>
           <Route path="/" element={<Navigate to="/app" />} />
-          <Route path="/app" element={<Main user={user} isCollapsed={isCollapsed} menu={menu} />}>
+          <Route path="/app" element={<Main user={user} onLogout={handleLogout} isCollapsed={isCollapsed} menu={menu} />}>
             <Route index element={<Home user={user} />} />
             <Route path=":id" element={<Chat />} />
           </Route>
-          <Route path="/app/:id" element={<Main user={user} isCollapsed={isCollapsed} menu={menu} />} />
+          <Route path="/app/:id" element={<Main user={user} onLogout={handleLogout} isCollapsed={isCollapsed} menu={menu} />} />
           <Route path="/register" element={<Register setUser={setUser} />} />
           <Route path="/login" element={<Login setUser={setUser} />}  /> 
         </Routes>
