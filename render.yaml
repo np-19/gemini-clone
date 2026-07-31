@@ -2,7 +2,7 @@ services:
   # Backend Web Service
   - type: web
     name: gemini-clone-backend
-    env: node
+    runtime: node
     plan: free
     rootDir: Backend
     buildCommand: npm install
@@ -20,20 +20,22 @@ services:
         generateValue: true # Render will automatically generate a secure random refresh secret key
       - key: FRONTEND_URL
         fromService:
-          type: static
+          type: web
           name: gemini-clone-frontend
           property: host
 
   # Frontend Static Site
-  - type: static
+  - type: web
     name: gemini-clone-frontend
+    runtime: static
     plan: free
     rootDir: Frontend
     buildCommand: npm install && npm run build
-    publishPath: dist
+    staticPublishPath: dist
     envVars:
       - key: VITE_API_BASE_URL
         fromService:
           type: web
           name: gemini-clone-backend
           property: host
+
