@@ -17,7 +17,7 @@ export const getChatData = async (id) => {
 }
 
 export const newChat = async (prompt, response) => {
-    const response1 = await fetch("/api/chats/new", {
+    const response1 = await apiFetch("/api/chats/new", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -39,7 +39,7 @@ export const updateChat = async (url, prompt, reply) => {
 }
 
 export const enhancePrompt = async (prompt) => {
-    const response = await fetch("/api/chats/enhance", {
+    const response = await apiFetch("/api/chats/enhance", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

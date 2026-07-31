@@ -4,7 +4,7 @@ import { Outlet } from "react-router";
 import Sidebar from "./Sidebar";
 
 
-const Main = ({ menu, isCollapsed, children }) => {
+const Main = ({ menu, isCollapsed, user }) => {
   const [response, setResponse] = useState([]);
   const [prompt, setPrompt] = useState("");
   const [loading, setLoading] = useState(false);
@@ -27,6 +27,7 @@ const Main = ({ menu, isCollapsed, children }) => {
         setResponse={setResponse}
         isCollapsed={isCollapsed}
         menu={menu}
+        user={user}
       />
       <div
         onClick={menuCollapse}

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Nav from "../layout/Nav";
 import { setAccessToken } from "../../helper/authToken";
+import { apiUrl } from "../../helper/apiFetch";
 import { useNavigate } from "react-router";
 
 
@@ -21,7 +22,7 @@ const Register = ({ isCollapsed, menu, setUser }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("/api/auth/register", {
+      const res = await fetch(apiUrl("/api/auth/register"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include", // needed if backend sets refresh token in HTTP-only cookie

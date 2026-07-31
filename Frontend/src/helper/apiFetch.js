@@ -2,7 +2,14 @@ import { setAccessToken,
     getAccessToken,
     clearAccessToken } from './authToken';
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || '';
+const configuredApiBase = import.meta.env.VITE_API_BASE_URL || '';
+// Render's `host` service property is a hostname, while fetch needs an absolute
+// URL when the frontend and backend are separate services.
+const API_BASE = configuredApiBase && !/^https?:\/\//i.test(configuredApiBase)
+    ? `https://${configuredApiBase}`
+    : configuredApiBase.replace(/\/$/, '');
+
+export const apiUrl = (url) => `${API_BASE}${url}`;
 
 export const apiFetch = async (url, options = {}) => {
     const token = getAccessToken();    
@@ -12,7 +19,7 @@ export const apiFetch = async (url, options = {}) => {
         'Content-Type': 'application/json'
     };
 
-    let res = await fetch(url, { ...options, headers, credentials: 'include' });
+    let res = await fetch(apiUrl(url), { ...options, headers, credentials: 'include' });
 
     if (res.status === 401) {
         const refreshed = await refreshAccessToken();        
@@ -24,9 +31,11 @@ export const apiFetch = async (url, options = {}) => {
         }
     }
     if (!res.ok) {
-        const data = await res.json();
-        console.error(data.error);
-        throw new Error(data.error);
+        const contentType = res.headers.get('content-type') || '';
+        const data = contentType.includes('application/json')
+            ? await res.json()
+            : { error: await res.text() };
+        throw new Error(data.error || `Request failed with status ${res.status}`);
     }
 
 
@@ -35,7 +44,7 @@ export const apiFetch = async (url, options = {}) => {
 
 const refreshAccessToken = async () => {
     try {
-        const res = await fetch(`${API_BASE}/api/auth/token`, { method: 'POST', credentials: 'include' });
+        const res = await fetch(apiUrl('/api/auth/token'), { method: 'POST', credentials: 'include' });
         if (!res.ok) {
             return false;
         }

@@ -1,9 +1,9 @@
 import { useRef, useState, useEffect } from "react";
 import {assets} from '../../assets/assets'
 import { useNavigate } from 'react-router';
-import {getAccessToken} from "../../helper/authToken"
+import { apiFetch } from "../../helper/apiFetch";
 
-const Sidebar = ({menu,isCollapsed,setResponse}) => {
+const Sidebar = ({ menu, isCollapsed, setResponse, user }) => {
   const divRef = useRef(null);
   let [data, setData] = useState([]);
 
@@ -36,14 +36,9 @@ const Sidebar = ({menu,isCollapsed,setResponse}) => {
 
 async function getChatTitle(){
     try {
-     const accessToken = getAccessToken();
-    const response = await fetch('/api/chats/',
+    const response = await apiFetch('/api/chats/',
       {
         method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${accessToken}`
-        },
   }
     );
     if (!response.ok) throw new Error('Failed to fetch chats');
@@ -56,11 +51,16 @@ async function getChatTitle(){
 
 
 useEffect(()=>{
+  if (!user) {
+    setData([]);
+    return;
+  }
+
   getChatTitle().then((data)=>{
     if(!data.titles) return;
     setData(data.titles)    
   })
-}, [])
+}, [user])
 
 
 

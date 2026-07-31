@@ -47,10 +47,10 @@ const Chat = () => {
   const displayResponse = response.map((item, index) => {
     if (response.length === 0) return null;
     return (
-     <>
-      <Markdown key={index} item={item} loading={index === response.length - 1 && loading } />
+     <div key={`${item.prompt}-${index}`}>
+      <Markdown item={item} loading={index === response.length - 1 && loading } />
       {index === response.length - 1 && <div ref={chatEndRef} />}
-      </>
+      </div>
     );
   });
   return (

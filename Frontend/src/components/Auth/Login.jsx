@@ -1,6 +1,7 @@
 import { useState } from "react";
 import {assets} from "../../assets/assets"
 import {setAccessToken} from "../../helper/authToken"
+import { apiUrl } from "../../helper/apiFetch";
 import {useNavigate} from "react-router";
 
 
@@ -20,7 +21,7 @@ const Login = ({setUser}) => {
     e.preventDefault();
     try {
 
-      const res = await fetch("/api/auth/login", {
+      const res = await fetch(apiUrl("/api/auth/login"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include", // 

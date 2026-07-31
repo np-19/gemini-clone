@@ -17,7 +17,10 @@ import { protect, authorize } from "./middlewares/auth.js";
 
 
 const app = express();
-app.use(cors({origin: process.env.FRONTEND_URL, credentials: true}));
+const frontendOrigin = process.env.FRONTEND_URL && !/^https?:\/\//i.test(process.env.FRONTEND_URL)
+  ? `https://${process.env.FRONTEND_URL}`
+  : process.env.FRONTEND_URL;
+app.use(cors({ origin: frontendOrigin, credentials: true }));
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
